@@ -1,12 +1,14 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {IFirebaseAuthResponse, IUser} from "../interfaces";
-import {Observable} from "rxjs";
+import {Observable, throwError, Subject} from "rxjs";
 import {environment} from "../../../../environments/environment";
-import {tap} from "rxjs/operators";
+import {catchError, tap} from "rxjs/operators";
 
 @Injectable()
 export class AuthService {
+  public error$: Subject<string> = new Subject<string>();
+
   constructor(private http: HttpClient) { }
 
   get token() : string {
@@ -30,7 +32,9 @@ export class AuthService {
         tap((response: any) => {
           const firebaseResponse : IFirebaseAuthResponse = { token: response.idToken, expiresIn: +response.expiresIn };
           this.setToken(firebaseResponse);
-        }));
+        }),
+        catchError(error => this.handleError(error))
+      );
   }
 
   logout() {
@@ -49,5 +53,21 @@ export class AuthService {
     const expirationDate = new Date(new Date().getTime() + response.expiresIn * 1000);
     localStorage.setItem('fbToken', response.token);
     localStorage.setItem('fbTokenExp', expirationDate.toString());
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    const {message} = error.error.error;
+    switch(message) {
+      case 'EMAIL_NOT_FOUND':
+        this.error$.next('Invalid email');
+        break;
+      case 'INVALID_EMAIL':
+        this.error$.next('Invalid email');
+        break;
+      case 'INVALID_PASSWORD':
+        this.error$.next('Invalid password');
+        break;
+    }
+    return throwError(error);
   }
 }
