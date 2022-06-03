@@ -5,6 +5,8 @@
     {{error}}
   </div>
 
+  <div class="alert alert-info" *ngIf="isRelogin">Please authorize.</div>
+
   <div
     class="form-control"
     [ngClass]="{invalid: form.get('email')?.touched && form.get('email')?.invalid}"

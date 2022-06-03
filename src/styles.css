@@ -116,6 +116,14 @@ list li {
   opacity: 0.8;
 }
 
+.alert {
+  padding: 0.7rem;
+  margin: 1rem 0;
+  opacity: 0.9;
+  background: var(--light-color);
+  color: #333;
+}
+
 .btn-primary,
 .bg-primary,
 .badge-primary,
@@ -183,14 +191,6 @@ list li {
   background: var(--light-color);
   color: #333;
   border-radius: 5px;
-}
-
-.alert {
-  padding: 0.7rem;
-  margin: 1rem 0;
-  opacity: 0.9;
-  background: var(--light-color);
-  color: #333;
 }
 
 .form-control {
