@@ -9,8 +9,12 @@ export interface IFirebaseAuthResponse {
   expiresIn: number
 }
 
+export interface IFirebaseCreatePostResponse {
+  name: string;
+}
+
 export interface IPost {
-  id?: number;
+  id?: string;
   date: Date;
   title: string;
   content: string;

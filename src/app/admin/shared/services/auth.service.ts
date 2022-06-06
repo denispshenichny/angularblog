@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {IFirebaseAuthResponse, IUser} from "../interfaces";
+import {IFirebaseAuthResponse, IUser} from "../../../shared/interfaces";
 import {Observable, throwError, Subject} from "rxjs";
 import {environment} from "../../../../environments/environment";
 import {catchError, tap} from "rxjs/operators";
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class AuthService {
   public error$: Subject<string> = new Subject<string>();
 
