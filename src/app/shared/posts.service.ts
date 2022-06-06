@@ -12,12 +12,11 @@ export class PostsService {
   public create(post: IPost) : Observable<IPost> {
     return this.http.post<any>(`${environment.dbEndpoint}/posts.json`, post)
       .pipe(map((response : IFirebaseCreatePostResponse) => {
-        const p: IPost = {
+        return {
           ...post,
           id: response.name,
           date: new Date(post.date)
         };
-        return p;
       }));
   }
 
@@ -37,5 +36,20 @@ export class PostsService {
 
   public delete(post: IPost) : Observable<void> {
     return this.http.delete<void>(`${environment.dbEndpoint}/posts/${post.id}.json`);
+  }
+
+  public getById(id: string) : Observable<IPost> {
+    return this.http.get<IPost>(`${environment.dbEndpoint}/posts/${id}.json`)
+      .pipe(map((post: IPost) => {
+        return {
+          ...post,
+          id,
+          date: new Date(post.date)
+        };
+      }));
+  }
+
+  public update(post: IPost) : Observable<IPost> {
+    return this.http.patch<IPost>(`${environment.dbEndpoint}/posts/${post.id}.json`, post);
   }
 }
