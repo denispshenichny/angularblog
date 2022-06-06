@@ -4,12 +4,11 @@ import {IFirebaseAuthResponse, IUser} from "../../../shared/interfaces";
 import {Observable, throwError, Subject} from "rxjs";
 import {environment} from "../../../../environments/environment";
 import {catchError, tap} from "rxjs/operators";
+import {AlertService} from "./alert.service";
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
-  public error$: Subject<string> = new Subject<string>();
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private alertService: AlertService) { }
 
   get token() : string {
     const expirationDate = localStorage.getItem('fbTokenExp');
@@ -55,19 +54,21 @@ export class AuthService {
     localStorage.setItem('fbTokenExp', expirationDate.toString());
   }
 
+  private getAlertText(message: string): string {
+    switch(message) {
+      case 'EMAIL_NOT_FOUND': return 'Invalid email';
+      case 'INVALID_EMAIL': return 'Invalid email';
+      case 'INVALID_PASSWORD': return 'Invalid password';
+      default: return '';
+    }
+  }
+
   private handleError(error: HttpErrorResponse) {
     const {message} = error.error.error;
-    switch(message) {
-      case 'EMAIL_NOT_FOUND':
-        this.error$.next('Invalid email');
-        break;
-      case 'INVALID_EMAIL':
-        this.error$.next('Invalid email');
-        break;
-      case 'INVALID_PASSWORD':
-        this.error$.next('Invalid password');
-        break;
-    }
+    const alertText: string = this.getAlertText(message);
+    if (alertText)
+      this.alertService.danger(alertText);
+
     return throwError(error);
   }
 }

@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {IUser} from "../../shared/interfaces";
 import {AuthService} from "../shared/services/auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
+import {AlertService} from "../shared/services/alert.service";
 
 @Component({
   selector: 'app-login-page',
@@ -11,20 +12,18 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 })
 export class LoginPageComponent implements OnInit {
   form!: FormGroup;
-  isRelogin : boolean = false;
 
   constructor(
     public auth: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params: Params) => {
-      if (params['relogin']) {
-        this.isRelogin = true;
-        setTimeout(() => this.isRelogin = false, 5000);
-      }
+      if (params['relogin'])
+        this.alertService.danger('Please authorize');
     });
 
     this.form = new FormGroup({
