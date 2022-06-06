@@ -1,1 +1,32 @@
-<p>dashboard-page works!</p>
+<div *ngIf="posts.length; else noPosts">
+  <div class="form-control">
+    <input type="text" placeholder="Filter posts..." [(ngModel)]="filterString">
+  </div>
+  <table>
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Author</th>
+      <th>Title</th>
+      <th>Date created</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let post of posts | filterPosts:filterString; let i = index">
+      <td>{{i + 1}}</td>
+      <td>{{post.author}}</td>
+      <td>{{post.title}}</td>
+      <td>{{post.date | date:'medium'}}</td>
+      <td>
+        <button class="btn btn-link open" [routerLink]="['/admin', 'post', post.id, 'edit']">Open post</button>
+        <a (click)="deletePost(post)">Delete post</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #noPosts>
+  <p class="text-center">No posts available...</p>
+</ng-template>

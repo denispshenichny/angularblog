@@ -20,4 +20,22 @@ export class PostsService {
         return p;
       }));
   }
+
+  public fetchAll() : Observable<IPost[]> {
+    return this.http.get<IPost[]>(`${environment.dbEndpoint}/posts.json`)
+      .pipe(
+        map((response: {[key: string] : any}) => {
+          return response ? Object.keys(response)
+            .map(key => ({
+              ...response[key],
+              id: key,
+              date: new Date(response[key].date)
+            })) : [];
+        })
+      );
+  }
+
+  public delete(post: IPost) : Observable<void> {
+    return this.http.delete<void>(`${environment.dbEndpoint}/posts/${post.id}.json`);
+  }
 }
